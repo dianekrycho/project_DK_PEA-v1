@@ -1,9 +1,6 @@
 package com.example.project_dk_peav1;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+
 import java.time.LocalDate;
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,12 +11,13 @@ public class Student {
     private String name;
     private String gender;
     private String email;
-    private LocalDate birth;
+    private Date birth;
     private String photo;
     private double mark;
     private String comment;
 
-    public Student(String name, String gender, String email, LocalDate birth, String photo, double mark, String comment) {
+    public Student(int id, String name, String gender, String email, Date birth, String photo, double mark, String comment) {
+        this.id=id;
         this.name = name;
         this.gender = gender;
         this.email = email;
@@ -32,7 +30,6 @@ public class Student {
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -40,7 +37,6 @@ public class Student {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -48,7 +44,6 @@ public class Student {
     public String getGender() {
         return gender;
     }
-
     public void setGender(String gender) {
         this.gender = gender;
     }
@@ -56,23 +51,20 @@ public class Student {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public LocalDate getBirth() {
+    public Date getBirth() {
         return birth;
     }
-
-    public void setBirth(LocalDate birth) {
+    public void setBirth(Date birth) {
         this.birth = birth;
     }
 
     public String getPhoto() {
         return photo;
     }
-
     public void setPhoto(String photo) {
         this.photo = photo;
     }
@@ -80,7 +72,6 @@ public class Student {
     public double getMark() {
         return mark;
     }
-
     public void setMark(double mark) {
         this.mark = mark;
     }
@@ -88,7 +79,6 @@ public class Student {
     public String getComment() {
         return comment;
     }
-
     public void setComment(String comment) {
         this.comment = comment;
     }
@@ -105,24 +95,6 @@ public class Student {
                 ", mark=" + mark +
                 ", comment='" + comment + '\'' +
                 '}';
-    }
-
-    List<String> connect_to_sql(String query, int columnIndex) {
-        List<String> result=new ArrayList<String>();
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/project", "root", "dianoetjojo");
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                result.add(rs.getString(columnIndex));
-            }
-            System.out.println(result);
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return result;
     }
 }
 

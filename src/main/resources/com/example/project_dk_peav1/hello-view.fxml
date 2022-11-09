@@ -183,7 +183,7 @@
                            <Insets top="10.0" />
                         </padding>
                      </GridPane>
-                     <Label text="Label">
+                     <Label fx:id="commentsLabel" text="Comments">
                         <GridPane.margin>
                            <Insets bottom="10.0" top="10.0" />
                         </GridPane.margin></Label>

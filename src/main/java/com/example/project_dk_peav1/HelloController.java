@@ -1,7 +1,10 @@
 package com.example.project_dk_peav1;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
@@ -11,8 +14,15 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 
+import java.net.URL;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
-public class HelloController {
+
+public class HelloController implements Initializable {
+    DBManager manager;
     @FXML
     private Button addButton;
     @FXML
@@ -27,6 +37,8 @@ public class HelloController {
     private Button cancelButton;
     @FXML
     private TextArea commentTextArea;
+    @FXML
+    private Label commentsLabel;
     @FXML
     private Button deleteButton;
     @FXML
@@ -58,18 +70,47 @@ public class HelloController {
     @FXML
     private Button saveButton;
     @FXML
-    private ListView<String> studentsList; // ObservableList<String>
+    private ListView<Student> studentsList; // ObservableList<String>
     @FXML
     private Label welcomeText;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        List<String> genderValues = new ArrayList<String>();
+        genderValues.add("Male");
+        genderValues.add("Female");
+        genderValues.add("trouver une blague");
+        ObservableList<String> gender = FXCollections.observableArrayList(genderValues);
+        genderChoiceBox.setItems(gender);
+
+        studentsList.getSelectionModel().selectedItemProperty().addListener(e-> displayStudentDetails(studentsList.getSelectionModel().getSelectedItem()));
+
+        manager = new DBManager();
+        fetchStudents();
+    }
+
+    private void displayStudentDetails(Student selectedStudent) {
+        if(selectedStudent!=null){
+            nameTextField.setText(selectedStudent.getName());
+            genderChoiceBox.setValue(selectedStudent.getGender());
+            emailTextField.setText(selectedStudent.getEmail());
+            birthDatePicker.setValue(selectedStudent.getBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            markTextField.setText(Double.toString(selectedStudent.getMark()));
+            commentTextArea.setText(selectedStudent.getComment());
+            // rajouter photos
+        }
+    }
+
+    public void fetchStudents(){
+        List<Student> listStudents=manager.loadStudents();
+        if(listStudents!=null){
+            ObservableList<Student> students;
+            students = FXCollections.observableArrayList(listStudents);
+            studentsList.setItems(students);
+        }
+    }
     @FXML
     void onAddButtonClick(ActionEvent event) {
-        Student etudiant;
-        String photo = " ";
-        if(nameTextField.getText()!="" && genderChoiceBox.getValue()!="default") {
-            etudiant = new Student(nameTextField.getText(), genderChoiceBox.getValue(), emailTextField.getText(), birthDatePicker.getValue(), photo, Double.parseDouble(markTextField.getText()), commentTextArea.getText());
-            // envoyer étudiant sur SQL
-        }
 
     }
 
@@ -92,7 +133,5 @@ public class HelloController {
     void onSaveButtonClick(ActionEvent event) {
 
     }
-
-
 }
 
