@@ -15,7 +15,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 
 import java.net.URL;
+//import java.sql.Date;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -111,17 +113,33 @@ public class HelloController implements Initializable {
     }
     @FXML
     void onAddButtonClick(ActionEvent event) {
-
+        studentsList.getSelectionModel().clearSelection();
+        this.nameTextField.setText(null);
+        this.genderChoiceBox.setValue(null);
+        this.emailTextField.setText(null);
+        this.birthDatePicker.setValue(null);
+        this.markTextField.setText(null);
+        this.commentTextArea.setText(null);
     }
 
     @FXML
     void onCancelButtonClick(ActionEvent event) {
-
+        // on selectionne par defaut le premier de la liste
+        fetchStudents();
+        studentsList.getSelectionModel().selectFirst();
     }
 
     @FXML
     void onDeleteButtonCLick(ActionEvent event) {
+        Student student=null;
+        //student = studentsList.getSelectionModel();
+        if(student != null) {
+            manager.deleteStudent(student);
+        }
 
+        // on selectionne le premier etuiant de la liste après suppression
+        fetchStudents();
+        studentsList.getSelectionModel().selectFirst();
     }
 
     @FXML
@@ -131,7 +149,18 @@ public class HelloController implements Initializable {
 
     @FXML
     void onSaveButtonClick(ActionEvent event) {
-
+        int id = 0;
+        String photo = null;
+        Student s= new Student(id,
+                nameTextField.getText(),
+                genderChoiceBox.getValue(),
+                emailTextField.getText(),
+                java.sql.Date.valueOf(birthDatePicker.getValue()),
+                photo,
+                Double.parseDouble(markTextField.getText()),
+                commentTextArea.getText());
+        manager.addStudent(s);
+        fetchStudents();
     }
 }
 

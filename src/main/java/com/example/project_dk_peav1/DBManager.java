@@ -61,10 +61,16 @@ public class DBManager {
         ResultSet myRs= null;
         try {
             myConn = this.Connector();
-            String sql = "INSERT INTO studenttable (name,gender) VALUES (?, ?)";
+            String sql = "INSERT INTO studenttable (name,gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             myStmt = myConn.prepareStatement(sql);
-            myStmt.setString(1, student.getName());
-            myStmt.setString(2, student.getGender());
+            myStmt.setInt(1, 0);
+            myStmt.setString(2, student.getName());
+            myStmt.setString(3, student.getGender());
+            myStmt.setString(4, student.getEmail());
+            myStmt.setDate(5, student.getBirth());
+            myStmt.setString(6, student.getPhoto());
+            myStmt.setDouble(7, student.getMark());
+            myStmt.setString(8, student.getComment());
             myStmt.execute();
         }
         catch(Exception e){
@@ -74,4 +80,52 @@ public class DBManager {
             close(myConn,myStmt,myRs);
         }
     }
+
+    public void deleteStudent(Student student){
+        Connection myConn=null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs= null;
+        String name = student.getName();
+        try {
+            myConn = this.Connector();
+            String sql = "delete from students where name_ = name";
+            myStmt = myConn.prepareStatement(sql);
+            myStmt.execute();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        finally{
+            close(myConn,myStmt,myRs);
+        }
+    }
+    /*
+    public void editStudent(Student student){
+        Connection myConn=null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs= null;
+        int id = student.getId();
+        try {
+            myConn = this.Connector();
+            String sql = "update students set name_='', gender='', email='', birthdate='', photo='', mark='', commentary='' where id=id;";
+            myStmt = myConn.prepareStatement(sql);
+            myStmt.setInt(1, 0);
+            myStmt.setString(2, student.getName());
+            myStmt.setString(3, student.getGender());
+            myStmt.setString(4, student.getEmail());
+            myStmt.setDate(5, student.getBirth());
+            myStmt.setString(6, student.getPhoto());
+            myStmt.setDouble(7, student.getMark());
+            myStmt.setString(8, student.getComment());
+            myStmt.execute();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        finally{
+            close(myConn,myStmt,myRs);
+        }
+    }
+
+     */
 }
