@@ -58,7 +58,7 @@ public class HelloController {
     @FXML
     private Button saveButton;
     @FXML
-    private ListView<String> studentsList;
+    private ListView<String> studentsList; // ObservableList<String>
     @FXML
     private Label welcomeText;
 
@@ -66,7 +66,7 @@ public class HelloController {
     void onAddButtonClick(ActionEvent event) {
         Student etudiant;
         String photo = " ";
-        if(nameTextField.getText()!=" " && genderChoiceBox.getValue()!="default") {
+        if(nameTextField.getText()!="" && genderChoiceBox.getValue()!="default") {
             etudiant = new Student(nameTextField.getText(), genderChoiceBox.getValue(), emailTextField.getText(), birthDatePicker.getValue(), photo, Double.parseDouble(markTextField.getText()), commentTextArea.getText());
             // envoyer étudiant sur SQL
         }
