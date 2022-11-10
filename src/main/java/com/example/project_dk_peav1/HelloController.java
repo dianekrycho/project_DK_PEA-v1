@@ -144,7 +144,18 @@ public class HelloController implements Initializable {
 
     @FXML
     void onEditButtonClick(ActionEvent event) {
-
+        String photo = null;
+        int id = studentsList.getSelectionModel().getSelectedItem().getId();
+        Student s= new Student(id,
+                nameTextField.getText(),
+                genderChoiceBox.getValue(),
+                emailTextField.getText(),
+                java.sql.Date.valueOf(birthDatePicker.getValue()),
+                photo,
+                Double.parseDouble(markTextField.getText()),
+                commentTextArea.getText());
+        manager.editStudent(s);
+        fetchStudents();
     }
 
     @FXML

@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="Maven: org.openjfx:javafx-graphics:mac:19-ea+7">
+  <library name="Maven: org.openjfx:javafx-graphics:win:19-ea+7">
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/19-ea+7/javafx-graphics-19-ea+7-mac.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/19-ea+7/javafx-graphics-19-ea+7-win.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/19-ea+7/javafx-graphics-19-ea+7-javadoc.jar!/" />

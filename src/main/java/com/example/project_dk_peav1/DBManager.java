@@ -10,7 +10,7 @@ public class DBManager {
         Connection myConn= this.Connector();
         try {
             Statement myStmt= myConn.createStatement();
-            String sql = "select * from studentstable";
+            String sql = "select * from students";
             ResultSet myRs= myStmt.executeQuery(sql);
             while (myRs.next()) {
                 Student s = new Student(myRs.getInt("id"),
@@ -35,7 +35,7 @@ public class DBManager {
     public Connection Connector(){
         try {
             Connection connection =
-                    DriverManager.getConnection("jdbc:mysql://localhost:3306/project", "root", "dianoetjojo");
+                    DriverManager.getConnection("jdbc:mysql://localhost:3306/project", "root", "password");
             return connection;
         }
         catch (Exception e) {
@@ -61,7 +61,7 @@ public class DBManager {
         ResultSet myRs= null;
         try {
             myConn = this.Connector();
-            String sql = "INSERT INTO studenttable (name,gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO students (id,name_,gender,email,birthDate,photo,mark,commentary) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             myStmt = myConn.prepareStatement(sql);
             myStmt.setInt(1, 0);
             myStmt.setString(2, student.getName());
@@ -99,24 +99,22 @@ public class DBManager {
             close(myConn,myStmt,myRs);
         }
     }
-    /*
     public void editStudent(Student student){
         Connection myConn=null;
         PreparedStatement myStmt = null;
         ResultSet myRs= null;
-        int id = student.getId();
         try {
             myConn = this.Connector();
-            String sql = "update students set name_='', gender='', email='', birthdate='', photo='', mark='', commentary='' where id=id;";
+            String sql = "UPDATE students SET name_ = ?,gender = ?,email = ?,birthDate = ?,photo = ?,mark = ?,commentary = ? WHERE id  = ?";
             myStmt = myConn.prepareStatement(sql);
-            myStmt.setInt(1, 0);
-            myStmt.setString(2, student.getName());
-            myStmt.setString(3, student.getGender());
-            myStmt.setString(4, student.getEmail());
-            myStmt.setDate(5, student.getBirth());
-            myStmt.setString(6, student.getPhoto());
-            myStmt.setDouble(7, student.getMark());
-            myStmt.setString(8, student.getComment());
+            myStmt.setString(1, student.getName());
+            myStmt.setString(2, student.getGender());
+            myStmt.setString(3, student.getEmail());
+            myStmt.setDate(4, student.getBirth());
+            myStmt.setString(5, student.getPhoto());
+            myStmt.setDouble(6, student.getMark());
+            myStmt.setString(7, student.getComment());
+            myStmt.setInt(8, student.getId());
             myStmt.execute();
         }
         catch(Exception e){
@@ -126,6 +124,4 @@ public class DBManager {
             close(myConn,myStmt,myRs);
         }
     }
-
-     */
 }
