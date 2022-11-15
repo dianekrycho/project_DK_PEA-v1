@@ -7,7 +7,7 @@ CREATE TABLE students (
     gender varchar(20) not null,
     email varchar(50),
     birthDate date,
-    photo varchar(50),
+    photo varchar(300),
     mark double,
     commentary varchar(200),
     primary key(id)
