@@ -3,6 +3,7 @@ package com.example.project_dk_peav1;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -12,11 +13,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
+import java.io.File;
 import java.net.URL;
 //import java.sql.Date;
-import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
@@ -24,9 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class HelloController implements Initializable {
@@ -82,7 +84,10 @@ public class HelloController implements Initializable {
     @FXML
     private Label welcomeText;
 
+    private String imagePath;
+
     private List<Student> studentObjectList;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -92,7 +97,12 @@ public class HelloController implements Initializable {
         genderValues.add("trouver une blague");
         ObservableList<String> gender = FXCollections.observableArrayList(genderValues);
         genderChoiceBox.setItems(gender);
-
+        photoImage.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
+            @Override
+            public void handle(javafx.scene.input.MouseEvent event) {
+                onPhotoClick(event);
+            }
+        });
         studentsList.getSelectionModel().selectedItemProperty().addListener(e-> {
             if(studentsList.getSelectionModel().getSelectedIndex()!= -1){
                 displayStudentDetails(studentObjectList.get(studentsList.getSelectionModel().getSelectedIndex()));
@@ -116,13 +126,18 @@ public class HelloController implements Initializable {
             this.saveButton.setDisable(true);
             this.editButton.setDisable(false);
             this.deleteButton.setDisable(false);
-            nameTextField.setText(selectedStudent.getName());
-            genderChoiceBox.setValue(selectedStudent.getGender());
-            emailTextField.setText(selectedStudent.getEmail());
-            birthDatePicker.setValue(selectedStudent.getBirth().toLocalDate());
-            markTextField.setText(Double.toString(selectedStudent.getMark()));
-            commentTextArea.setText(selectedStudent.getComment());
-            // rajouter photos
+            this.nameTextField.setText(selectedStudent.getName());
+            this.genderChoiceBox.setValue(selectedStudent.getGender());
+            this.emailTextField.setText(selectedStudent.getEmail());
+            this.birthDatePicker.setValue(selectedStudent.getBirth().toLocalDate());
+            this.markTextField.setText(Double.toString(selectedStudent.getMark()));
+            this.commentTextArea.setText(selectedStudent.getComment());
+            this.photoImage.setImage(null);
+            this.imagePath = selectedStudent.getPhoto();
+            if (imagePath != null && !imagePath.equals("")){
+                Image image = new Image(imagePath);
+                photoImage.setImage(image);
+            }
         }
     }
 
@@ -159,6 +174,7 @@ public class HelloController implements Initializable {
         this.birthDatePicker.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         this.markTextField.setText(String.valueOf(0));
         this.commentTextArea.setText("");
+        this.photoImage.setImage(null);
         this.commentTextArea.setDisable(false);
         this.nameTextField.setDisable(false);
         this.genderChoiceBox.setDisable(false);
@@ -192,7 +208,7 @@ public class HelloController implements Initializable {
 
     @FXML
     void onEditButtonClick(ActionEvent event) {
-        String photo = null;
+        //String photo = null;
         int id = studentObjectList.get(studentsList.getSelectionModel().getSelectedIndex()).getId();
         if (birthDatePicker.getValue() == null) {
             birthDatePicker.setValue(LocalDate.of(1900, Month.JANUARY, 1));
@@ -203,10 +219,12 @@ public class HelloController implements Initializable {
                     genderChoiceBox.getValue(),
                     emailTextField.getText(),
                     java.sql.Date.valueOf(birthDatePicker.getValue()),
-                    photo,
+                    imagePath,
                     Double.parseDouble(markTextField.getText()),
                     commentTextArea.getText());
             manager.editStudent(s);
+            imagePath = null;
+            photoImage.setImage(null);
             fetchStudents();
             studentsList.getSelectionModel().selectFirst();
         }
@@ -222,22 +240,41 @@ public class HelloController implements Initializable {
             birthDatePicker.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         }
         int id = 0;
-        String photo = null;
+        //String photo = null;
         if (!Objects.equals(nameTextField.getText(), "") && !Objects.equals(genderChoiceBox.getValue(), "")){
             Student s= new Student(id,
                     nameTextField.getText(),
                     genderChoiceBox.getValue(),
                     emailTextField.getText(),
                     java.sql.Date.valueOf(birthDatePicker.getValue()),
-                    photo,
+                    imagePath,
                     Double.parseDouble(markTextField.getText()),
                     commentTextArea.getText());
             manager.addStudent(s);
+            imagePath = null;
+            photoImage.setImage(null);
             fetchStudents();
         }
         else {
             //Message d'erreur
             JOptionPane.showMessageDialog(null,"Please enter name and gender","Error", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    @FXML
+    void onPhotoClick(MouseEvent event) {
+        JFileChooser fileChooser = new JFileChooser();
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        fileChooser.setCurrentDirectory(workingDirectory);
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        FileNameExtensionFilter extFilter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png");
+        fileChooser.addChoosableFileFilter(extFilter);
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION)
+        {
+            File selectedFile = fileChooser.getSelectedFile();
+            this.imagePath = selectedFile.toURI().toString();
+            Image image = new Image(imagePath);
+            photoImage.setImage(image);
         }
     }
 }

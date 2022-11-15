@@ -135,7 +135,7 @@
                        </rowConstraints>
                         <children>
                            <Label fx:id="photoLabel" text="Photo" GridPane.rowIndex="1" />
-                           <ImageView fx:id="photoImage" disable="true" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" />
+                           <ImageView fx:id="photoImage" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#onPhotoClick" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" />
                         </children>
                         <opaqueInsets>
                            <Insets />
