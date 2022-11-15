@@ -1,5 +1,7 @@
 package com.example.project_dk_peav1;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.util.converter.LocalDateStringConverter;
 
 import java.io.File;
 import java.net.URL;
@@ -91,12 +94,14 @@ public class HelloController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         List<String> genderValues = new ArrayList<String>();
         genderValues.add("Male");
         genderValues.add("Female");
-        genderValues.add("trouver une blague");
         ObservableList<String> gender = FXCollections.observableArrayList(genderValues);
         genderChoiceBox.setItems(gender);
+
+        //Gestion des evenements
         photoImage.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
             @Override
             public void handle(javafx.scene.input.MouseEvent event) {
@@ -116,6 +121,7 @@ public class HelloController implements Initializable {
     }
 
     private void displayStudentDetails(Student selectedStudent) {
+        //Affichage des informations sur l'élève selectionné
         if(selectedStudent!=null){
             this.commentTextArea.setDisable(false);
             this.nameTextField.setDisable(false);
@@ -123,6 +129,7 @@ public class HelloController implements Initializable {
             this.emailTextField.setDisable(false);
             this.birthDatePicker.setDisable(false);
             this.markTextField.setDisable(false);
+            this.cancelButton.setDisable(true);
             this.saveButton.setDisable(true);
             this.editButton.setDisable(false);
             this.deleteButton.setDisable(false);
@@ -142,6 +149,7 @@ public class HelloController implements Initializable {
     }
 
     public void fetchStudents(){
+        //Récupération des données depuis la base SQL
         List<Student> listStudents=manager.loadStudents();
         if(listStudents!=null){
             ObservableList<Student> students;
@@ -167,13 +175,15 @@ public class HelloController implements Initializable {
     }
     @FXML
     void onAddButtonClick(ActionEvent event) {
+        // Mise à zéro des informations affichées quand on souhaite ajouter un nouvel élève
+        // Désactivation des boutons de suppression et d'édition de l'élève et activation du bouton de sauvegarde d'un élève
         studentsList.getSelectionModel().clearSelection();
         this.nameTextField.setText("");
         this.genderChoiceBox.setValue("");
         this.emailTextField.setText("");
         this.birthDatePicker.setValue(LocalDate.of(1900, Month.JANUARY, 1));
-        this.markTextField.setText(String.valueOf(0));
         this.commentTextArea.setText("");
+        this.markTextField.setText("");
         this.photoImage.setImage(null);
         this.commentTextArea.setDisable(false);
         this.nameTextField.setDisable(false);
@@ -181,52 +191,60 @@ public class HelloController implements Initializable {
         this.emailTextField.setDisable(false);
         this.birthDatePicker.setDisable(false);
         this.markTextField.setDisable(false);
+        this.cancelButton.setDisable(false);
         this.saveButton.setDisable(false);
         this.editButton.setDisable(true);
         this.deleteButton.setDisable(true);
+        this.addButton.setDisable(true);
     }
 
     @FXML
     void onCancelButtonClick(ActionEvent event) {
-        // on selectionne par defaut le premier de la liste
+        // On recharge la liste et on sélectionne le premier de celle-ci
+        addButton.setDisable(false);
         fetchStudents();
         studentsList.getSelectionModel().selectFirst();
     }
 
     @FXML
     void onDeleteButtonCLick(ActionEvent event) {
-        Student student=null;
-        student = studentObjectList.get(studentsList.getSelectionModel().getSelectedIndex());
-        //studentsList.getSelectionModel().getSelectedIndex();
+        Student student = studentObjectList.get(studentsList.getSelectionModel().getSelectedIndex());
         if(student != null) {
             manager.deleteStudent(student);
         }
-        // on selectionne le premier etuiant de la liste après suppression
+        // On recharge la liste et on sélectionne le premier de celle-ci
         fetchStudents();
         studentsList.getSelectionModel().selectFirst();
     }
 
     @FXML
     void onEditButtonClick(ActionEvent event) {
-        //String photo = null;
+        //Edition d'un élève existant
+        LocalDate defaultDate = LocalDate.of(1900, Month.JANUARY, 1);
         int id = studentObjectList.get(studentsList.getSelectionModel().getSelectedIndex()).getId();
         if (birthDatePicker.getValue() == null) {
             birthDatePicker.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         }
         if (!Objects.equals(nameTextField.getText(), "") && !Objects.equals(genderChoiceBox.getValue(), "")){
-            Student s= new Student(id,
-                    nameTextField.getText(),
-                    genderChoiceBox.getValue(),
-                    emailTextField.getText(),
-                    java.sql.Date.valueOf(birthDatePicker.getValue()),
-                    imagePath,
-                    Double.parseDouble(markTextField.getText()),
-                    commentTextArea.getText());
-            manager.editStudent(s);
-            imagePath = null;
-            photoImage.setImage(null);
-            fetchStudents();
-            studentsList.getSelectionModel().selectFirst();
+            if(markTextField.getText().matches("[+-]?([0-9]*[.])?[0-9]+") && Double.parseDouble(markTextField.getText()) >= 0 && Double.parseDouble(markTextField.getText()) <= 20 ){
+                if(Objects.equals(markTextField.getText(), "")){markTextField.setText("-1");}
+                Student s= new Student(id,
+                        nameTextField.getText(),
+                        genderChoiceBox.getValue(),
+                        emailTextField.getText(),
+                        java.sql.Date.valueOf(birthDatePicker.getValue()),
+                        imagePath,
+                        Double.parseDouble(markTextField.getText()),
+                        commentTextArea.getText());
+                manager.editStudent(s);
+                imagePath = null;
+                photoImage.setImage(null);
+                fetchStudents();
+                studentsList.getSelectionModel().selectFirst();
+            } else {
+                //Message d'erreur
+                JOptionPane.showMessageDialog(null,"Wrong mark value","Error", JOptionPane.WARNING_MESSAGE);
+            }
         }
         else {
             //Message d'erreur
@@ -236,24 +254,36 @@ public class HelloController implements Initializable {
 
     @FXML
     void onSaveButtonClick(ActionEvent event) {
+        //Création dun nouvel élève
         if (birthDatePicker.getValue() == null) {
             birthDatePicker.setValue(LocalDate.of(1900, Month.JANUARY, 1));
         }
+        String pattern = "[+-]?([0-9]*[.])?[0-9]+";
         int id = 0;
-        //String photo = null;
         if (!Objects.equals(nameTextField.getText(), "") && !Objects.equals(genderChoiceBox.getValue(), "")){
-            Student s= new Student(id,
-                    nameTextField.getText(),
-                    genderChoiceBox.getValue(),
-                    emailTextField.getText(),
-                    java.sql.Date.valueOf(birthDatePicker.getValue()),
-                    imagePath,
-                    Double.parseDouble(markTextField.getText()),
-                    commentTextArea.getText());
-            manager.addStudent(s);
-            imagePath = null;
-            photoImage.setImage(null);
-            fetchStudents();
+            if (markTextField.getText().matches("[+-]?([0-9]*[.])?[0-9]+") && Double.parseDouble(markTextField.getText()) >= 0 && Double.parseDouble(markTextField.getText()) <= 20 ) {
+                if(Objects.equals(markTextField.getText(), "")){markTextField.setText("-1");}
+                Student s = new Student(id,
+                        nameTextField.getText(),
+                        genderChoiceBox.getValue(),
+                        emailTextField.getText(),
+                        java.sql.Date.valueOf(birthDatePicker.getValue()),
+                        imagePath,
+                        Double.parseDouble(markTextField.getText()),
+                        commentTextArea.getText());
+                manager.addStudent(s);
+                imagePath = null;
+                photoImage.setImage(null);
+                fetchStudents();
+                cancelButton.setDisable(true);
+                addButton.setDisable(false);
+                saveButton.setDisable(true);
+                editButton.setDisable(false);
+                deleteButton.setDisable(false);
+            } else {
+                //Message d'erreur
+                JOptionPane.showMessageDialog(null,"Wrong mark value","Error", JOptionPane.WARNING_MESSAGE);
+            }
         }
         else {
             //Message d'erreur
@@ -262,6 +292,7 @@ public class HelloController implements Initializable {
     }
     @FXML
     void onPhotoClick(MouseEvent event) {
+        //Import d'une photo depuis les fichier locaux par l'utilisateur
         JFileChooser fileChooser = new JFileChooser();
         File workingDirectory = new File(System.getProperty("user.dir"));
         fileChooser.setCurrentDirectory(workingDirectory);
