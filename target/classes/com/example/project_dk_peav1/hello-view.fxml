@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="581.0" prefWidth="631.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.project_dk_peav1.HelloController">
+<VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.project_dk_peav1.HelloController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -59,7 +59,7 @@
                  </rowConstraints>
                   <children>
                      <Label fx:id="averageLabel" text="Average" />
-                     <TextField fx:id="averageTextField" GridPane.columnIndex="1" />
+                     <TextField fx:id="averageTextField" disable="true" editable="false" GridPane.columnIndex="1" />
                   </children>
                </GridPane>
             </children>
@@ -109,15 +109,15 @@
                            <Label fx:id="emailLabel" text="Email" GridPane.rowIndex="5" />
                            <Label fx:id="birthLabel" text="Date of birth" GridPane.rowIndex="7" />
                            <Label fx:id="markLabel" text="Mark" GridPane.rowIndex="9" />
-                           <DatePicker fx:id="birthDatePicker" GridPane.rowIndex="8" />
-                           <TextField fx:id="nameTextField" GridPane.rowIndex="2" />
-                           <TextField fx:id="emailTextField" GridPane.rowIndex="6">
+                           <DatePicker fx:id="birthDatePicker" disable="true" GridPane.rowIndex="8" />
+                           <TextField fx:id="nameTextField" disable="true" GridPane.rowIndex="2" />
+                           <TextField fx:id="emailTextField" disable="true" GridPane.rowIndex="6">
                               <padding>
                                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                               </padding>
                            </TextField>
-                           <TextField fx:id="markTextField" GridPane.rowIndex="10" />
-                           <ChoiceBox fx:id="genderChoiceBox" prefWidth="150.0" GridPane.rowIndex="4" />
+                           <TextField fx:id="markTextField" disable="true" GridPane.rowIndex="10" />
+                           <ChoiceBox fx:id="genderChoiceBox" disable="true" prefWidth="150.0" GridPane.rowIndex="4" />
                         </children>
                         <opaqueInsets>
                            <Insets />
@@ -135,7 +135,7 @@
                        </rowConstraints>
                         <children>
                            <Label fx:id="photoLabel" text="Photo" GridPane.rowIndex="1" />
-                           <ImageView fx:id="photoImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" />
+                           <ImageView fx:id="photoImage" disable="true" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" />
                         </children>
                         <opaqueInsets>
                            <Insets />
@@ -174,9 +174,9 @@
                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                        </rowConstraints>
                         <children>
-                           <Button fx:id="editButton" mnemonicParsing="false" onAction="#onEditButtonClick" text="Edit" />
-                           <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#onDeleteButtonCLick" text="Delete" GridPane.columnIndex="1" />
-                           <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveButtonClick" text="Save" GridPane.columnIndex="3" />
+                           <Button fx:id="editButton" disable="true" mnemonicParsing="false" onAction="#onEditButtonClick" text="Edit" />
+                           <Button fx:id="deleteButton" disable="true" mnemonicParsing="false" onAction="#onDeleteButtonCLick" text="Delete" GridPane.columnIndex="1" />
+                           <Button fx:id="saveButton" disable="true" mnemonicParsing="false" onAction="#onSaveButtonClick" text="Save" GridPane.columnIndex="3" />
                            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onCancelButtonClick" text="Cancel" GridPane.columnIndex="4" />
                         </children>
                         <padding>
@@ -187,7 +187,7 @@
                         <GridPane.margin>
                            <Insets bottom="10.0" top="10.0" />
                         </GridPane.margin></Label>
-                     <TextArea fx:id="commentTextArea" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                     <TextArea fx:id="commentTextArea" disable="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                         <opaqueInsets>
                            <Insets />
                         </opaqueInsets></TextArea>

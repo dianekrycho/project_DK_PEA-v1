@@ -56,6 +56,9 @@ public class DBManager {
         }
     }
     public void addStudent(Student student){
+        if (student.getBirth() == null){
+            student.setBirth(Date.valueOf("01/01/1900"));
+        }
         Connection myConn=null;
         PreparedStatement myStmt = null;
         ResultSet myRs= null;
@@ -85,11 +88,12 @@ public class DBManager {
         Connection myConn=null;
         PreparedStatement myStmt = null;
         ResultSet myRs= null;
-        String name = student.getName();
+        int id = student.getId();
         try {
             myConn = this.Connector();
-            String sql = "delete from students where name_ = name";
+            String sql = "DELETE FROM students WHERE id = ?";
             myStmt = myConn.prepareStatement(sql);
+            myStmt.setInt(1, id);
             myStmt.execute();
         }
         catch(Exception e){
@@ -100,6 +104,9 @@ public class DBManager {
         }
     }
     public void editStudent(Student student){
+        if (student.getBirth() == null){
+            student.setBirth(Date.valueOf("01/01/1900"));
+        }
         Connection myConn=null;
         PreparedStatement myStmt = null;
         ResultSet myRs= null;
